@@ -9,6 +9,10 @@ public class Bill {
 
     }
 
+    public Bill viewBill(Bill billID){
+        return billID.toString();
+    }
+
     public String viewCommentsOnBill(int billID){
 
     }
@@ -19,5 +23,8 @@ public class Bill {
 
     public void voteOnBill(boolean vote){
 
+    }
+
+    public static void toString(){
     }
 }
