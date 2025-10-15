@@ -14,4 +14,9 @@ public class PoliticalAppManager {
     public void addBill(Bill bill) {
         bills.add(bill);
     }
+
+    public List<Bill> getAllBills() {
+        return new ArrayList<>(bills);
+    }
+
 }
