@@ -21,34 +21,7 @@ public class Bill {
         this.against = 0;
         this.comments = new ArrayList<>();
     }
-
-    public double showVotePercent() {
-        if (numberMockVotes == 0) return 0.0;
-        return (double) inFavor / numberMockVotes * 100;
-    }
-
-    public Bill viewBill() {
-        // Returns a copy of this bill (could be more meaningful in context)
-        return this;
-    }
-
-    public List<String> viewCommentsOnBill() {
-        return new ArrayList<>(comments);
-    }
-
-    public void makeComment(String comment) {
-        comments.add(comment);
-    }
-
-    public void voteOnBill(boolean vote) {
-        numberMockVotes++;
-        if (vote) {
-            inFavor++;
-        } else {
-            against++;
-        }
-    }
-
+    
     @Override
     public String toString() {
         return "Bill{" +
