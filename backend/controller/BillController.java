@@ -19,6 +19,16 @@ public class BillController{
     return billStore.values();
   }
 
+  //Vote on a Bill
+  public String voteOnBill(int id, boolean inFavor){
+    Bill bill = billStore.get(id);
+    if(bill == null) return "Bill not found.";
+    bill.voteOnBill(inFavor);
+    return "Vote recorded. Current support: " + bill.showVotePercent() + "%";
+  }
+
+  
+
   
 
 }
