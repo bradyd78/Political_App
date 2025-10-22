@@ -11,6 +11,14 @@ public class BillController{
     return bill;
   }
 
+  public Bill getBill(int id){
+    return billStore.get(id);
+  }
+
+  public Collection<Bill> getAllBills(){
+    return billStore.values();
+  }
+
   
 
 }
