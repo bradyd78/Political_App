@@ -27,6 +27,15 @@ public class BillController{
     return "Vote recorded. Current support: " + bill.showVotePercent() + "%";
   }
 
+  //Get recent Bills
+  public List<Bill> getRecentBills(int limit) {
+    return billStore.values().stream()
+      .sorted((b1,b2)->b2.getCreatedAt().compareTo(b1.getCreatedAt()))
+      .limit(limit)
+      .toList();
+  }
+
+  
   
 
   
