@@ -10,15 +10,8 @@ This project is a civic engagement platform designed to help users interact with
 
 
 ### 📊 Architectural Diagram
+<img width="1033" height="499" alt="image" src="https://github.com/user-attachments/assets/66329fdf-17cb-4367-bc82-1bd0256a0907" />
 
-> ⚠️ **Diagram Edits Needed:**
-> - Add arrows between layers:
->   - From each Controller to its corresponding Service
->   - From each Service to the Database
-> - Add View components next to each Controller (e.g., `BillView`, `UserView`)
-> - Add Repository classes in the Data Access Layer (e.g., `BillRepository`, `UserRepository`)
-> - Rename “SupaBase/Firebase?” to “Database Layer” and list both as options
-> - Add a legend or color key to distinguish Controllers, Services, Models, and Repositories
 
 ---
 
