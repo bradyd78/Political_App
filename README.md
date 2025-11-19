@@ -22,51 +22,106 @@ This project is a civic engagement platform designed to help users interact with
 
 ---
 
-### 🧠 Architecture Explanation
+Presentation Layer (MVC Controllers)
 
-This application uses a hybrid of **Model-View-Controller (MVC)** and **Layered Architecture**, organized into three layers:
+This is the topmost layer and consists of the controllers and user interface code.
 
-#### 1. Presentation Layer
-- **Controllers:**
-  - `BillController`
-  - `PoliticalFigureController`
-  - `UserController`
-  - `PoliticalNewsFeedController`
-  - `CommentController`
-- **Views:**
-  - `BillView`
-  - `UserView`
-  - `NewsFeedView`
-  - `CommentView`
-- **Role:** Handles HTTP requests, user interactions, and delegates logic to the service layer.
+Components:
 
-#### 2. Service Layer
-- **Models/Services:**
-  - `Bill`
-  - `User`
-  - `PoliticalFigure`
-  - `BAPublishes`
-  - `PoliticalNewsFeed`
-  - `CommentOnBill`
-- **Role:** Contains business logic and domain models. Services validate input, enforce rules, and coordinate data flow between controllers and repositories.
+AppManager
 
-#### 3. Data Access Layer
-- **Repositories:**
-  - `BillRepository`
-  - `UserRepository`
-  - `CommentRepository`
-- **Database:**
-  - Supabase or Firebase
-- **Role:** Manages data persistence and retrieval. Abstracts database operations from the service layer.
+UserController
 
----
+BillController
 
-### 🔄 Component Communication
+PoliticalFigureController
 
-- `BillController` → calls `Bill` service → which queries `BillRepository` → which interacts with Supabase.
-- `UserController` → interacts with `User` service → which reads/writes user data via `UserRepository` → stored in Firebase.
-- `PoliticalNewsFeedController` → uses `PoliticalNewsFeed` service → which aggregates news from the database.
-- `CommentController` → calls `CommentOnBill` service → which stores comments via `CommentRepository`.
+Responsibilities:
+
+Receives user actions (menu selections, input commands)
+
+Translates UI requests into service-layer calls
+
+Formats data before displaying back to the user
+
+Does not implement business logic
+
+Communication:
+
+Controllers → call → Service Layer Managers
+Controllers → display output → User
+
+This is equivalent to the Presentation Layer described in the sample file where Spring Controllers handle requests and rely on Services to execute logic 
+
+SampleReadMeFile
+
+.
+
+Business / Service Layer
+
+This layer contains the core logic of the system. It mirrors the “Service” section of the sample project, which includes InfluencerService, ReviewService, and others 
+
+SampleReadMeFile
+
+.
+
+Components:
+
+UserManager
+
+BillManager
+
+PoliticalFigureManager
+
+Responsibilities:
+
+Validate inputs received from controllers
+
+Apply political app business rules
+
+Coordinate interactions between controllers and models
+
+Prepare data for display or further processing
+
+Communication:
+
+Service Layer → reads/writes → Data Layer
+Service Layer → returns results → Controller Layer
+
+This is the same pattern as the Business Layer in the sample file, where business logic is kept separate from controllers and models.
+
+Data / Model Layer
+
+This layer stores the application’s domain data, similar to the Model and Repository sections of the sample file 
+
+SampleReadMeFile
+
+.
+
+Components:
+
+User
+
+Bill
+
+Political_Figure
+
+(Optionally) a file/database storage handler
+
+Responsibilities:
+
+Represent core data structures
+
+Store attributes of domain entities
+
+Support serialization or persistence (future)
+
+Provide structured data to service layer
+
+Communication:
+
+Models → accessed by → Managers
+Models → return entity data → Managers
 
 ---
 
