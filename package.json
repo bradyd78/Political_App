@@ -1,0 +1,19 @@
+{
+  "name": "political_app",
+  "version": "1.0.0",
+  "description": "## 📘 Project Overview This project is a civic engagement platform designed to help users interact with political content, track bills, follow political figures, and comment on legislation. It integrates a mix of **MVC** and **N-tier layered architecture** to ensure scalability, maintainability, and clear separation of concerns.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
