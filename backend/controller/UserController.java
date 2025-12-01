@@ -15,7 +15,7 @@ public class UserController {
         // Check if username already exists
         for (User u : users) {
             if (u.getUsername().equalsIgnoreCase(newUser.getUsername())) {
-                return "❌ User already exists";
+                return "User already exists";
             }
         }
         users.add(newUser);
