@@ -1,16 +1,20 @@
 public class Settings {
-    private String theme;          // e.g., "Light" or "Dark"
-    private boolean notificationsEnabled;
-    private String language;       // e.g., "en", "es"
+    private String theme;                 // "Light" or "Dark"
+    private boolean notificationsEnabled; // true or false
+    private String language;             
 
-    // Constructor
+    // --- No-args constructor (required for JSON mapping) ---
+    public Settings() {
+    }
+
+    // --- All-args constructor ---
     public Settings(String theme, boolean notificationsEnabled, String language) {
         this.theme = theme;
         this.notificationsEnabled = notificationsEnabled;
         this.language = language;
     }
 
-    // Getters and Setters
+    // --- Getters and Setters ---
     public String getTheme() {
         return theme;
     }
@@ -35,6 +39,7 @@ public class Settings {
         this.language = language;
     }
 
+    // --- toString for debugging ---
     @Override
     public String toString() {
         return "Settings {" +

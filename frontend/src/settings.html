@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Settings</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    label { display: block; margin-top: 10px; }
+    button { margin-top: 20px; padding: 8px 12px; }
+    .settings-box { border: 1px solid #ccc; padding: 15px; width: 300px; }
+  </style>
+</head>
+<body>
+  <h1>⚙️ User Settings</h1>
+  <div class="settings-box">
+    <form id="settingsForm">
+      <label>
+        Theme:
+        <select id="theme">
+          <option value="Light">Light</option>
+          <option value="Dark">Dark</option>
+        </select>
+      </label>
+
+      <label>
+        <input type="checkbox" id="notifications"> Enable Notifications
+      </label>
+
+      <label>
+        Language:
+        <select id="language">
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+        </select>
+      </label>
+
+      <button type="submit">Save Settings</button>
+    </form>
+  </div>
+
+  <h2>Current Settings</h2>
+  <pre id="currentSettings"></pre>
+
+  <script>
+    const apiBase = "http://localhost:8080/api/settings";
+
+    async function loadSettings() {
+      const res = await fetch(apiBase);
+      const settings = await res.json();
+      document.getElementById("theme").value = settings.theme;
+      document.getElementById("notifications").checked = settings.notificationsEnabled;
+      document.getElementById("language").value = settings.language;
+      document.getElementById("currentSettings").textContent = JSON.stringify(settings, null, 2);
+    }
+
+    document.getElementById("settingsForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const settings = {
+        theme: document.getElementById("theme").value,
+        notificationsEnabled: document.getElementById("notifications").checked,
+        language: document.getElementById("language").value
+      };
+
+      await fetch(apiBase, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings)
+      });
+
+      loadSettings();
+    });
+
+    loadSettings();
+  </script>
+</body>
+</html>
