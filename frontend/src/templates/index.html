@@ -3,7 +3,7 @@
 {% block content %}
   <div class="p-4 bg-white rounded shadow-sm">
     <h1 class="mb-3">Welcome to the Political App</h1>
-    <p class="lead"></p>
+    <p class="lead">This demo shows a simple, improved frontend served by Flask. Use the navigation to explore pages.</p>
 
     <div class="row mt-4">
       <div class="col-md-6">
@@ -13,11 +13,136 @@
           <li><a href="/map">Map (demo)</a></li>
           <li><a href="/quiz">Quiz (demo)</a></li>
         </ul>
+
+        <hr>
+        <div class="mb-2">
+          <input id="billSearch" class="form-control" placeholder="Search bills by keyword or category...">
+        </div>
+        <button id="loadBills" class="btn btn-primary mb-2">Reload Bills Feed</button>
+        <div id="billsContainer" class="mt-3"></div>
       </div>
       <div class="col-md-6">
         <h5>About</h5>
-        <p>Replace with summaries</p>
+        <p>Replace this area with summaries, news, or links to the Java backend controllers when integrating services.</p>
       </div>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const btn = document.getElementById('loadBills');
+      const out = document.getElementById('billsContainer');
+      const search = document.getElementById('billSearch');
+      let allBills = [];
+
+      async function loadBills() {
+        out.textContent = 'Loading...';
+        try {
+          const res = await fetch('/api/bills');
+          if (!res.ok) throw new Error(`Server returned ${res.status}`);
+          allBills = await res.json();
+          renderBills();
+        } catch (err) {
+          out.textContent = 'Error: ' + err.message;
+        }
+      }
+
+      function renderBills() {
+        const q = (search.value || '').toLowerCase();
+        const filtered = allBills.filter(b =>
+          b.title.toLowerCase().includes(q) ||
+          b.description.toLowerCase().includes(q) ||
+          b.category.toLowerCase().includes(q) ||
+          b.id.toLowerCase().includes(q)
+        );
+        out.innerHTML = filtered.length
+          ? `<div class="list-group">` + filtered.map((b, i) => `
+              <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                  <h5 class="mb-1">${b.title}</h5>
+                  <small class="text-muted">${b.id}</small>
+                  <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#bill${i}" aria-expanded="false" aria-controls="bill${i}">Details</button>
+                </div>
+                <div class="collapse" id="bill${i}">
+                  <p class="mb-1 mt-2">${b.description}</p>
+                  <small class="text-secondary">${b.category}</small>
+                  <hr>
+                  <div>
+                    <h6>Comments</h6>
+                    <ul class="list-unstyled mb-2" id="comments-${b.id}"><li>Loading...</li></ul>
+                    <form class="comment-form" data-bill="${b.id}">
+                      <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="Add a comment..." required>
+                        <button class="btn btn-outline-secondary" type="submit">Post</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>`).join('') + `</div>`
+          : '<div>No bills found</div>';
+
+        // Enable collapse/expand and load comments on expand
+        document.querySelectorAll('[data-toggle="collapse"]').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const target = document.getElementById(this.getAttribute('data-target').replace('#',''));
+            if (target) {
+              target.classList.toggle('show');
+              if (target.classList.contains('show')) {
+                const billId = allBills[parseInt(this.getAttribute('data-target').replace('#bill',''))].id;
+                loadComments(billId);
+              }
+            }
+          });
+        });
+
+        // Attach comment form handlers
+        document.querySelectorAll('.comment-form').forEach(form => {
+          form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const billId = this.getAttribute('data-bill');
+            const input = this.querySelector('input');
+            const text = input.value.trim();
+            if (!text) return;
+            const btn = this.querySelector('button');
+            btn.disabled = true;
+            try {
+              const res = await fetch(`/api/bills/${billId}/comments`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+              });
+              if (res.ok) {
+                input.value = '';
+                loadComments(billId);
+              }
+            } finally {
+              btn.disabled = false;
+            }
+          });
+        });
+
+        // Helper to load comments for a bill
+        async function loadComments(billId) {
+          const ul = document.getElementById(`comments-${billId}`);
+          if (!ul) return;
+          ul.innerHTML = '<li>Loading...</li>';
+          try {
+            const res = await fetch(`/api/bills/${billId}/comments`);
+            const comments = res.ok ? await res.json() : [];
+            ul.innerHTML = comments.length
+              ? comments.map(c => `<li><span class="fw-bold">${c.user}:</span> ${c.text}</li>`).join('')
+              : '<li class="text-muted">No comments yet.</li>';
+          } catch {
+            ul.innerHTML = '<li class="text-danger">Failed to load comments</li>';
+          }
+        }
+      }
+
+      btn.addEventListener('click', loadBills);
+      search.addEventListener('input', renderBills);
+
+      // Auto-load on page load
+      loadBills();
+    });
+  </script>
 {% endblock %}
