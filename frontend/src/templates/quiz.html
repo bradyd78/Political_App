@@ -3,52 +3,110 @@
 <head>
   <meta charset="utf-8">
   <title>Basic Civics Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 500px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-weight: bold;
+      margin-top: 15px;
+      color: #444;
+    }
+
+    label {
+      display: block;
+      margin: 5px 0;
+      cursor: pointer;
+    }
+
+    input[type="radio"] {
+      margin-right: 8px;
+    }
+
+    input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background: #4facfe;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    input[type="submit"]:hover {
+      background: #00c6fb;
+    }
+  </style>
 </head>
 <body>
 
-<h2>Civics Quiz</h2>
+<div class="container">
+  <h2>Civics Quiz</h2>
 
-<form>
+  <form>
+    <p>1. What is the supreme law of the land?</p>
+    <label><input type="radio" name="q1"> The Declaration of Independence</label>
+    <label><input type="radio" name="q1"> The Constitution</label>
+    <label><input type="radio" name="q1"> Federal Statutes</label>
+    <label><input type="radio" name="q1"> The Bill of Rights</label>
 
-<p>1. What is the supreme law of the land?</p>
-<input type="radio" name="q1"> The Declaration of Independence<br>
-<input type="radio" name="q1"> The Constitution<br>
-<input type="radio" name="q1"> Federal Statutes<br>
-<input type="radio" name="q1"> The Bill of Rights<br><br>
+    <p>2. Who makes federal laws?</p>
+    <label><input type="radio" name="q2"> The President</label>
+    <label><input type="radio" name="q2"> The Supreme Court</label>
+    <label><input type="radio" name="q2"> Congress</label>
+    <label><input type="radio" name="q2"> State Legislatures</label>
 
-<p>2. Who makes federal laws?</p>
-<input type="radio" name="q2"> The President<br>
-<input type="radio" name="q2"> The Supreme Court<br>
-<input type="radio" name="q2"> Congress<br>
-<input type="radio" name="q2"> State Legislatures<br><br>
+    <p>3. What are the three branches of government?</p>
+    <label><input type="radio" name="q3"> Executive, Legislative, Judicial</label>
+    <label><input type="radio" name="q3"> Federal, State, Local</label>
+    <label><input type="radio" name="q3"> President, Congress, Senate</label>
+    <label><input type="radio" name="q3"> Law, Order, Finance</label>
 
-<p>3. What are the three branches of government?</p>
-<input type="radio" name="q3"> Executive, Legislative, Judicial<br>
-<input type="radio" name="q3"> Federal, State, Local<br>
-<input type="radio" name="q3"> President, Congress, Senate<br>
-<input type="radio" name="q3"> Law, Order, Finance<br><br>
+    <p>4. How many U.S. senators are there?</p>
+    <label><input type="radio" name="q4"> 50</label>
+    <label><input type="radio" name="q4"> 100</label>
+    <label><input type="radio" name="q4"> 435</label>
+    <label><input type="radio" name="q4"> 535</label>
 
-<p>4. How many U.S. senators are there?</p>
-<input type="radio" name="q4"> 50<br>
-<input type="radio" name="q4"> 100<br>
-<input type="radio" name="q4"> 435<br>
-<input type="radio" name="q4"> 535<br><br>
+    <p>5. What are the first ten amendments to the Constitution called?</p>
+    <label><input type="radio" name="q5"> The Articles</label>
+    <label><input type="radio" name="q5"> The Bill of Rights</label>
+    <label><input type="radio" name="q5"> The Preamble</label>
+    <label><input type="radio" name="q5"> The Federalist Papers</label>
 
-<p>5. What are the first ten amendments to the Constitution called?</p>
-<input type="radio" name="q5"> The Articles<br>
-<input type="radio" name="q5"> The Bill of Rights<br>
-<input type="radio" name="q5"> The Preamble<br>
-<input type="radio" name="q5"> The Federalist Papers<br><br>
+    <p>6. Who is not an author of the Declaration of Independence?</p>
+    <label><input type="radio" name="q6"> George Washington</label>
+    <label><input type="radio" name="q6"> Benjamin Franklin</label>
+    <label><input type="radio" name="q6"> Thomas Jefferson</label>
+    <label><input type="radio" name="q6"> John Adams</label>
 
-<p>6. Who is not an author of the Declaration of Independence?</p>
-<input type="radio" name="q6"> George Washington<br>
-<input type="radio" name="q6"> Benjamin Franklin<br>
-<input type="radio" name="q6"> Thomas Jefferson<br>
-<input type="radio" name="q6"> John Adams<br><br>
-
-<input type="submit" value="Submit">
-
-</form>
+    <input type="submit" value="Submit">
+  </form>
+</div>
 
 </body>
 </html>
