@@ -215,6 +215,35 @@ def api_publishes():
     return jsonify(results)
 
 
+@app.route('/api/publishes', methods=['POST'])
+def api_publishes_post():
+    # admin-only: create a publish
+    if not session.get('is_admin'):
+        return jsonify({'error': 'admin required'}), 403
+    data = request.get_json() or {}
+    title = (data.get('title') or '').strip()
+    content = (data.get('content') or '').strip()
+    ptype = (data.get('type') or 'Article').strip()
+    if not title or not content:
+        return jsonify({'error': 'title and content required'}), 400
+    load_publishes_from_file()
+    next_id = max([p.get('id', 0) for p in PUBLISHES] or [0]) + 1
+    new = {'id': next_id, 'title': title, 'content': content, 'type': ptype, 'timestamp': datetime.utcnow().isoformat() + 'Z'}
+    PUBLISHES.append(new)
+    save_publishes_to_file()
+    return jsonify({'success': True, 'publish': new})
+
+
+@app.route('/admin')
+def admin_page():
+    # render admin UI; ensure user is signed in as admin
+    user = session.get('user')
+    if not session.get('is_admin'):
+        return redirect(url_for('login'))
+    load_publishes_from_file()
+    return render_template('admin.html', user=user, publishes=PUBLISHES)
+
+
 @app.route('/api/bills', methods=['POST'])
 def api_bills_post():
     # admin-only: add a bill (format: id auto-generated, title, description, category)

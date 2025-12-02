@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Admin — Political App{% endblock %}
+{% block content %}
+  <div class="p-4 bg-white rounded shadow-sm">
+    <h1 class="mb-3">Admin Console</h1>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h5>Add Bill</h5>
+        <form id="addBillForm">
+          <input class="form-control mb-2" id="billTitle" placeholder="Title" required>
+          <input class="form-control mb-2" id="billDescription" placeholder="Description" required>
+          <input class="form-control mb-2" id="billCategory" placeholder="Category">
+          <button class="btn btn-primary" type="submit">Add Bill</button>
+        </form>
+
+        <hr>
+        <h5>Add Publish (Article/Blog)</h5>
+        <form id="addPublishForm">
+          <input class="form-control mb-2" id="pubTitle" placeholder="Title" required>
+          <textarea class="form-control mb-2" id="pubContent" placeholder="Content" rows="4" required></textarea>
+          <select id="pubType" class="form-select mb-2">
+            <option value="Article">Article</option>
+            <option value="Blog">Blog</option>
+          </select>
+          <button class="btn btn-primary" type="submit">Publish</button>
+        </form>
+      </div>
+
+      <div class="col-md-6">
+        <h5>Existing Publishes</h5>
+        <div id="adminPublishes">
+          {% for p in publishes %}
+            <div class="card mb-2">
+              <div class="card-body">
+                <h6 class="card-title">{{ p.title }}</h6>
+                <p class="card-text"><small class="text-muted">{{ p.type }} • {{ p.timestamp }}</small></p>
+                <p class="card-text">{{ p.content }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/admin.js"></script>
+{% endblock %}

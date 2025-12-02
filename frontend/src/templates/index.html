@@ -2,28 +2,47 @@
 {% block title %}Home — Political App{% endblock %}
 {% block content %}
   <div class="p-4 bg-white rounded shadow-sm">
-    <h1 class="mb-3">Welcome to the Political App</h1>
-    <p class="lead">This demo shows a simple, improved frontend served by Flask. Use the navigation to explore pages.</p>
+    <div class="row">
+      <div class="col-md-8">
+        <h1 class="mb-3">Political App</h1>
+        <p class="lead">A small demo for bills, publishes, and local civic tools. Use the navigation to explore features.</p>
 
-    <div class="row mt-4">
-      <div class="col-md-6">
-        <h5>Quick Links</h5>
-        <ul>
-          <li><a href="/login">Sign in</a></li>
-          <li><a href="/map">Map (demo)</a></li>
-          <li><a href="/quiz">Quiz (demo)</a></li>
-        </ul>
-
-        <hr>
-        <div class="mb-2">
-          <input id="billSearch" class="form-control" placeholder="Search bills by keyword or category...">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">Latest Publishes</h5>
+            <p class="card-text">Quick access to Articles and Blogs.</p>
+            <a class="btn btn-outline-primary" href="/publishes">View Publishes</a>
+          </div>
         </div>
-        <button id="loadBills" class="btn btn-primary mb-2">Reload Bills Feed</button>
-        <div id="billsContainer" class="mt-3"></div>
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Bills</h5>
+            <div class="mb-2">
+              <input id="billSearch" class="form-control" placeholder="Search bills by keyword or category...">
+            </div>
+            <button id="loadBills" class="btn btn-primary mb-2">Reload Bills Feed</button>
+            <div id="billsContainer" class="mt-3"></div>
+          </div>
+        </div>
       </div>
-      <div class="col-md-6">
-        <h5>About</h5>
-        <p>Replace this area with summaries, news, or links to the Java backend controllers when integrating services.</p>
+
+      <div class="col-md-4">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">Admin</h5>
+            <p class="card-text">Admin users can manage bills and publishes.</p>
+            <a class="btn btn-outline-secondary" href="/admin">Admin Console</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Map</h5>
+            <p class="card-text">Explore geospatial data.</p>
+            <a class="btn btn-outline-secondary" href="/map">Open Map</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
