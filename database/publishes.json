@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "New Tax Policy Announced",
+    "content": "The government revealed a new tax policy aimed at supporting small businesses.",
+    "type": "Article",
+    "timestamp": "2025-10-30T00:00:00Z"
+  },
+  {
+    "id": 2,
+    "title": "Understanding the New Voting Bill",
+    "content": "A detailed look into the implications of the latest voting rights bill.",
+    "type": "Article",
+    "timestamp": "2025-10-30T00:00:00Z"
+  },
+  {
+    "id": 3,
+    "title": "Behind the Scenes: Policy Reform Journey",
+    "content": "A first-hand blog on what it’s like to navigate the policy reform process.",
+    "type": "Blog",
+    "timestamp": "2025-10-30T00:00:00Z"
+  },
+  {
+    "id": 4,
+    "title": "My Experience at the National Debate",
+    "content": "An inside story from a young journalist attending the annual national debate.",
+    "type": "Blog",
+    "timestamp": "2025-10-30T00:00:00Z"
+  }
+]

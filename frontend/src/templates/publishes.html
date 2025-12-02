@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Publishes — Political App{% endblock %}
+{% block content %}
+  <div class="p-4 bg-white rounded shadow-sm">
+    <h1 class="mb-3">Publishes</h1>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <input id="pubSearch" class="form-control" placeholder="Search articles or blogs...">
+      </div>
+      <div class="col-md-3">
+        <select id="pubType" class="form-select">
+          <option value="">All</option>
+          <option value="Article">Articles</option>
+          <option value="Blog">Blogs</option>
+        </select>
+      </div>
+      <div class="col-md-3 text-end">
+        <button id="reloadPublishes" class="btn btn-primary">Reload</button>
+      </div>
+    </div>
+
+    <div id="publishesList" class="list-group mb-4"></div>
+
+    <div id="publishView" class="card d-none">
+      <div class="card-body">
+        <h4 id="publishTitle"></h4>
+        <p class="text-muted" id="publishMeta"></p>
+        <hr>
+        <div id="publishContent"></div>
+        <div class="mt-3 text-end">
+          <button id="closePublish" class="btn btn-secondary btn-sm">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/publishes.js"></script>
+{% endblock %}
