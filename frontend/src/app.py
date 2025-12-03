@@ -1,70 +1,25 @@
-import os
 import json
-import requests
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session, Response
-from flask_cors import CORS
-from collections import defaultdict
+import os
+import re
 from datetime import datetime
+
+import requests
+from flask import (
+    Flask, Response, jsonify, redirect, render_template, request, session, url_for
+)
+from flask_cors import CORS
+
+import data_store
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-app = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'), static_folder=os.path.join(BASE_DIR, 'static'))
+app = Flask(
+    __name__,
+    template_folder=os.path.join(BASE_DIR, 'templates'),
+    static_folder=os.path.join(BASE_DIR, 'static')
+)
 CORS(app)
 app.secret_key = os.environ.get('FLASK_SECRET', 'dev-secret-key')
-
-# In-memory comments: {bill_id: [ {"text": ..., "user": ...}, ... ]}
-COMMENTS = defaultdict(list)
-COMMENTS_FILE = os.path.abspath(os.path.join(BASE_DIR, '..', '..', 'database', 'comments.json'))
-
-# Users persistence
-USERS = {}
-USERS_FILE = os.path.abspath(os.path.join(BASE_DIR, '..', '..', 'database', 'users.json'))
-
-
-def load_comments_from_file():
-    global COMMENTS
-    try:
-        if os.path.exists(COMMENTS_FILE):
-            with open(COMMENTS_FILE, 'r', encoding='utf-8') as fh:
-                COMMENTS = defaultdict(list, json.load(fh))
-                return
-    except Exception:
-        COMMENTS = defaultdict(list)
-
-
-def save_comments_to_file():
-    try:
-        os.makedirs(os.path.dirname(COMMENTS_FILE), exist_ok=True)
-        with open(COMMENTS_FILE, 'w', encoding='utf-8') as fh:
-            json.dump(COMMENTS, fh, ensure_ascii=False, indent=2)
-    except Exception:
-        pass
-
-
-def load_users_from_file():
-    global USERS
-    try:
-        if os.path.exists(USERS_FILE):
-            with open(USERS_FILE, 'r', encoding='utf-8') as fh:
-                USERS = json.load(fh)
-                return
-    except Exception:
-        USERS = {}
-
-    # seed admin user if missing
-    USERS = {
-        'admin': {'password': '1234', 'is_admin': True}
-    }
-    save_users_to_file()
-
-
-def save_users_to_file():
-    try:
-        os.makedirs(os.path.dirname(USERS_FILE), exist_ok=True)
-        with open(USERS_FILE, 'w', encoding='utf-8') as fh:
-            json.dump(USERS, fh, ensure_ascii=False, indent=2)
-    except Exception:
-        pass
 
 JAVA_BACKEND = os.environ.get('JAVA_BACKEND_URL', 'http://localhost:8080')
 
@@ -109,83 +64,73 @@ def seed_publishes():
         return
     load_publishes_from_file()
 
-@app.route('/api/bills/<bill_id>/comments', methods=['GET'])
-def get_comments(bill_id):
-    load_comments_from_file()
-    return jsonify(COMMENTS.get(bill_id, []))
-
-@app.route('/api/bills/<bill_id>/comments', methods=['POST'])
-def post_comment(bill_id):
-    data = request.get_json() or {}
-    text = data.get('text', '').strip()
-    user = session.get('user', 'anonymous')
-    if not text:
-        return jsonify({'error': 'Comment text required'}), 400
-    load_comments_from_file()
-    COMMENTS.setdefault(bill_id, [])
-    COMMENTS[bill_id].append({'text': text, 'user': user})
-    save_comments_to_file()
-    return jsonify({'success': True})
-import os
-import requests
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session, Response
-from flask_cors import CORS
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-app = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'), static_folder=os.path.join(BASE_DIR, 'static'))
-CORS(app)
-app.secret_key = os.environ.get('FLASK_SECRET', 'dev-secret-key')
-
-JAVA_BACKEND = os.environ.get('JAVA_BACKEND_URL', 'http://localhost:8080')
-
 @app.route('/')
 def home():
     user = session.get('user')
     return render_template('index.html', user=user)
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         return render_template('login.html')
-    load_users_from_file()
-    data = request.get_json() or request.form or {}
-    username = data.get('username')
-    password = data.get('password')
+    req_data = request.get_json() or request.form or {}
+    username = req_data.get('username')
+    password = req_data.get('password')
     if not username or not password:
         return jsonify({"success": False, "message": "Missing credentials"}), 400
-    u = USERS.get(username)
-    if not u or u.get('password') != password:
+    user_info = data_store.authenticate_user(username, password)
+    if not user_info:
         return jsonify({"success": False, "message": "Invalid credentials"}), 401
     session['user'] = username
-    session['is_admin'] = bool(u.get('is_admin'))
+    session['is_admin'] = bool(user_info.get('is_admin'))
     return jsonify({"success": True, "message": "Login successful"})
+
 
 @app.route('/logout')
 def logout():
     session.pop('user', None)
+    session.pop('is_admin', None)
     return redirect(url_for('home'))
 
 
 @app.route('/signup', methods=['POST'])
 def signup():
-    data = request.get_json() or request.form or {}
-    username = (data.get('username') or '').strip()
-    password = (data.get('password') or '').strip()
+    req_data = request.get_json() or request.form or {}
+    username = (req_data.get('username') or '').strip()
+    password = (req_data.get('password') or '').strip()
     if not username or not password:
         return 'Username and password required', 400
-    load_users_from_file()
-    if username in USERS:
+    if data_store.user_exists(username):
         return 'Username already exists', 400
-    USERS[username] = {'password': password, 'is_admin': False}
-    save_users_to_file()
+    if not data_store.add_user(username, password, is_admin=False):
+        return 'Failed to create user', 500
     session['user'] = username
     session['is_admin'] = False
     return 'Signup successful'
 
+
 @app.route('/map')
 def map_page():
     return render_template('map.html')
+
+
+@app.route('/api/bills/<bill_id>/comments', methods=['GET'])
+def get_bill_comments(bill_id):
+    comments = data_store.get_comments(bill_id)
+    return jsonify(comments)
+
+
+@app.route('/api/bills/<bill_id>/comments', methods=['POST'])
+def post_comment(bill_id):
+    req_data = request.get_json() or {}
+    text = req_data.get('text', '').strip()
+    user = session.get('user', 'anonymous')
+    if not text:
+        return jsonify({'error': 'Comment text required'}), 400
+    if not data_store.add_comment(bill_id, text, user):
+        return jsonify({'error': 'Failed to save comment'}), 500
+    return jsonify({'success': True})
 
 
 @app.route('/publishes')
@@ -209,7 +154,7 @@ def api_publishes():
         results.append(p)
     # sort newest first by timestamp
     try:
-        results.sort(key=lambda x: x.get('timestamp',''), reverse=True)
+        results.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
     except Exception:
         pass
     return jsonify(results)
@@ -220,18 +165,33 @@ def api_publishes_post():
     # admin-only: create a publish
     if not session.get('is_admin'):
         return jsonify({'error': 'admin required'}), 403
-    data = request.get_json() or {}
-    title = (data.get('title') or '').strip()
-    content = (data.get('content') or '').strip()
-    ptype = (data.get('type') or 'Article').strip()
+    req_data = request.get_json() or {}
+    title = (req_data.get('title') or '').strip()
+    content = (req_data.get('content') or '').strip()
+    ptype = (req_data.get('type') or 'Article').strip()
     if not title or not content:
         return jsonify({'error': 'title and content required'}), 400
     load_publishes_from_file()
     next_id = max([p.get('id', 0) for p in PUBLISHES] or [0]) + 1
-    new = {'id': next_id, 'title': title, 'content': content, 'type': ptype, 'timestamp': datetime.utcnow().isoformat() + 'Z'}
+    new = {
+        'id': next_id,
+        'title': title,
+        'content': content,
+        'type': ptype,
+        'timestamp': datetime.utcnow().isoformat() + 'Z'
+    }
     PUBLISHES.append(new)
     save_publishes_to_file()
     return jsonify({'success': True, 'publish': new})
+
+
+@app.route('/api/publishes/<int:pid>')
+def api_publish_get(pid):
+    seed_publishes()
+    for p in PUBLISHES:
+        if p['id'] == pid:
+            return jsonify(p)
+    return jsonify({'error': 'not found'}), 404
 
 
 @app.route('/admin')
@@ -244,15 +204,58 @@ def admin_page():
     return render_template('admin.html', user=user, publishes=PUBLISHES)
 
 
+@app.route('/quiz')
+def quiz_page():
+    return render_template('quiz.html')
+
+
+@app.route('/api/bills')
+def api_bills():
+    # Try to read bills from billsList.txt first
+    bills_file = os.path.join(os.path.dirname(__file__), '../../database/billsList.txt')
+    bills = []
+    try:
+        with open(bills_file, encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                # Format: B001: Title — Description. [Category]
+                m = re.match(r'^(B\d+):\s*(.+?)\s+—\s+(.+?)\.\s*\[(.+)\]$', line)
+                if m:
+                    bills.append({
+                        'id': m.group(1),
+                        'title': m.group(2),
+                        'description': m.group(3),
+                        'category': m.group(4)
+                    })
+        return jsonify(bills)
+    except Exception as e:
+        # If file read fails, fallback to Java backend proxy
+        try:
+            r = requests.get(f'{JAVA_BACKEND}/api/bills', timeout=5)
+            return Response(
+                r.content,
+                status=r.status_code,
+                content_type=r.headers.get('Content-Type', 'application/json')
+            )
+        except Exception as e2:
+            return jsonify({
+                'error': 'Could not load bills',
+                'details': str(e),
+                'proxy_error': str(e2)
+            }), 502
+
+
 @app.route('/api/bills', methods=['POST'])
 def api_bills_post():
     # admin-only: add a bill (format: id auto-generated, title, description, category)
     if not session.get('is_admin'):
         return jsonify({'error': 'admin required'}), 403
-    data = request.get_json() or {}
-    title = (data.get('title') or '').strip()
-    description = (data.get('description') or '').strip()
-    category = (data.get('category') or '').strip() or 'General'
+    req_data = request.get_json() or {}
+    title = (req_data.get('title') or '').strip()
+    description = (req_data.get('description') or '').strip()
+    category = (req_data.get('category') or '').strip() or 'General'
     if not title or not description:
         return jsonify({'error': 'title and description required'}), 400
     bills_file = os.path.join(os.path.dirname(__file__), '../../database/billsList.txt')
@@ -282,48 +285,6 @@ def api_bills_post():
         return jsonify({'error': 'failed to save', 'details': str(e)}), 500
     return jsonify({'success': True, 'id': bill_id})
 
-
-@app.route('/api/publishes/<int:pid>')
-def api_publish_get(pid):
-    seed_publishes()
-    for p in PUBLISHES:
-        if p['id'] == pid:
-            return jsonify(p)
-    return jsonify({'error': 'not found'}), 404
-
-@app.route('/quiz')
-def quiz_page():
-    return render_template('quiz.html')
-
-@app.route('/api/bills')
-def api_bills():
-    # Try to read bills from billsList.txt first
-    bills_file = os.path.join(os.path.dirname(__file__), '../../database/billsList.txt')
-    bills = []
-    try:
-        with open(bills_file, encoding='utf-8') as f:
-            for line in f:
-                line = line.strip()
-                if not line or line.startswith('#'):
-                    continue
-                # Format: B001: Title — Description. [Category]
-                import re
-                m = re.match(r'^(B\d+):\s*(.+?)\s+—\s+(.+?)\.\s*\[(.+)\]$', line)
-                if m:
-                    bills.append({
-                        'id': m.group(1),
-                        'title': m.group(2),
-                        'description': m.group(3),
-                        'category': m.group(4)
-                    })
-        return jsonify(bills)
-    except Exception as e:
-        # If file read fails, fallback to Java backend proxy
-        try:
-            r = requests.get(f'{JAVA_BACKEND}/api/bills', timeout=5)
-            return Response(r.content, status=r.status_code, content_type=r.headers.get('Content-Type', 'application/json'))
-        except Exception as e2:
-            return jsonify({'error': 'Could not load bills', 'details': str(e), 'proxy_error': str(e2)}), 502
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
