@@ -1,1 +1,12 @@
-{}
+{
+  "B001": [
+    {
+      "text": "Hello",
+      "user": "anonymous"
+    },
+    {
+      "text": "This bill sucks",
+      "user": "anonymous"
+    }
+  ]
+}

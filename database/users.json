@@ -1,3 +1,10 @@
 {
-  "admin": { "password": "1234", "is_admin": true }
+  "admin": {
+    "password": "1234",
+    "is_admin": true
+  },
+  "bradyd": {
+    "password": "brady123",
+    "is_admin": false
+  }
 }

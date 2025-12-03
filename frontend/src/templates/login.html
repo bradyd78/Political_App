@@ -2,128 +2,536 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>User Signup/Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Political App - Login</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #4facfe, #00f2fe);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
     }
 
     .container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      width: 350px;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 440px;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
       text-align: center;
+      margin-bottom: 30px;
     }
 
-    h1 {
+    .logo h1 {
+      color: #667eea;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .logo p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      color: #666;
+      font-weight: 600;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+      user-select: none;
+    }
+
+    .tab:hover {
+      color: #667eea;
+    }
+
+    .tab.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    .form-container {
+      display: none;
+    }
+
+    .form-container.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .form-group {
       margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
       color: #333;
+      font-weight: 500;
+      font-size: 14px;
     }
 
-    h2 {
-      margin-top: 20px;
-      color: #555;
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.3s;
+      background: #f8f9fa;
     }
 
-    form {
-      margin-top: 10px;
-    }
-
-    input {
-      width: 90%;
-      padding: 10px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      transition: border-color 0.3s;
-    }
-
-    input:focus {
-      border-color: #4facfe;
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus {
+      border-color: #667eea;
       outline: none;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+      cursor: pointer;
+      accent-color: #667eea;
+    }
+
+    .checkbox-group label {
+      margin-bottom: 0;
+      cursor: pointer;
+      font-size: 14px;
     }
 
     button {
-      width: 95%;
-      padding: 10px;
-      margin-top: 10px;
-      background: #4facfe;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border: none;
-      border-radius: 5px;
+      border-radius: 10px;
       color: white;
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
 
     button:hover {
-      background: #00c6fb;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
     }
 
-    .divider {
-      margin: 20px 0;
-      border-top: 1px solid #eee;
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .footer-text {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+      font-size: 13px;
+    }
+
+    .footer-text a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer-text a:hover {
+      text-decoration: underline;
+    }
+
+    .admin-badge {
+      display: inline-block;
+      background: #ff6b6b;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .back-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #667eea;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.3s;
+      width: fit-content;
+    }
+
+    .back-button:hover {
+      background: #f0f0f0;
+      transform: translateX(-4px);
+    }
+
+    .back-button svg {
+      transition: transform 0.3s;
+    }
+
+    .back-button:hover svg {
+      transform: translateX(-4px);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Account Management</h1>
+    <div class="logo">
+      <h1>🏛️ Political App</h1>
+      <p>Stay informed, stay engaged</p>
+    </div>
 
-    <h2>Signup</h2>
-    <form id="signupForm">
-      <input type="text" id="signupUsername" placeholder="Username" required>
-      <input type="password" id="signupPassword" placeholder="Password" required>
-      <button type="submit">Signup</button>
-    </form>
+    <a href="/" class="back-button" title="Back to Home">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Back to Home
+    </a>
 
-    <div class="divider"></div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('login')">Login</div>
+      <div class="tab" onclick="switchTab('signup')">Sign Up</div>
+    </div>
 
-    <h2>Login</h2>
-    <form id="loginForm">
-      <input type="text" id="loginUsername" placeholder="Username" required>
-      <input type="password" id="loginPassword" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
+    <div id="alertBox" class="alert"></div>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="form-container active">
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="loginUsername">Username</label>
+          <input type="text" id="loginUsername" placeholder="Enter your username" required>
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter your password" required>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="adminLogin">
+          <label for="adminLogin">
+            Login as Admin
+            <span class="admin-badge">ADMIN</span>
+          </label>
+        </div>
+
+        <button type="submit" id="loginButton">Login</button>
+      </form>
+
+      <div class="footer-text">
+        Don't have an account? <a href="#" onclick="switchTab('signup'); return false;">Sign up here</a>
+      </div>
+    </div>
+
+    <!-- Signup Form -->
+    <div id="signupForm" class="form-container">
+      <form onsubmit="handleSignup(event)">
+        <div class="form-group">
+          <label for="signupUsername">Username</label>
+          <input type="text" id="signupUsername" placeholder="Choose a username" required minlength="3">
+        </div>
+
+        <div class="form-group">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" placeholder="Create a password" required minlength="4">
+        </div>
+
+        <div class="form-group">
+          <label for="signupPasswordConfirm">Confirm Password</label>
+          <input type="password" id="signupPasswordConfirm" placeholder="Re-enter your password" required>
+        </div>
+
+        <button type="submit" id="signupButton">Create Account</button>
+      </form>
+
+      <div class="footer-text">
+        Already have an account? <a href="#" onclick="switchTab('login'); return false;">Login here</a>
+      </div>
+    </div>
   </div>
 
   <script>
-    const apiBase = "http://localhost:5000";
+    const apiBase = window.location.origin;
 
-    document.getElementById("signupForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const username = document.getElementById("signupUsername").value;
-      const password = document.getElementById("signupPassword").value;
-
-      const res = await fetch(apiBase + "/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
+    function switchTab(tab) {
+      // Update tab buttons - find and activate the correct tab
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach((t, index) => {
+        t.classList.remove('active');
+        if ((tab === 'login' && index === 0) || (tab === 'signup' && index === 1)) {
+          t.classList.add('active');
+        }
       });
 
-      alert(await res.text());
-    });
+      // Update form containers
+      if (tab === 'login') {
+        document.getElementById('loginForm').classList.add('active');
+        document.getElementById('signupForm').classList.remove('active');
+      } else {
+        document.getElementById('signupForm').classList.add('active');
+        document.getElementById('loginForm').classList.remove('active');
+      }
 
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      // Clear alert
+      hideAlert();
+    }
+
+    function showAlert(message, type) {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.textContent = message;
+      alertBox.className = `alert ${type} show`;
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        hideAlert();
+      }, 5000);
+    }
+
+    function hideAlert() {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.classList.remove('show');
+    }
+
+    async function handleLogin(e) {
       e.preventDefault();
-      const username = document.getElementById("loginUsername").value;
+      
+      const username = document.getElementById("loginUsername").value.trim();
       const password = document.getElementById("loginPassword").value;
+      const isAdmin = document.getElementById("adminLogin").checked;
+      const button = document.getElementById("loginButton");
 
-      const res = await fetch(apiBase + "/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
+      // Basic validation
+      if (!username || !password) {
+        showAlert("Please enter both username and password", "alert-error");
+        return;
+      }
 
-      alert(await res.text());
+      // For admin login, enforce admin username check
+      if (isAdmin && username !== 'admin') {
+        showAlert("Admin login requires the 'admin' username", "alert-error");
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "Logging in...";
+
+      try {
+        const res = await fetch(apiBase + "/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          showAlert("Login successful! Redirecting...", "alert-success");
+          
+          // Check if admin login was expected
+          if (isAdmin && !data.is_admin) {
+            showAlert("This account does not have admin privileges", "alert-error");
+            button.disabled = false;
+            button.textContent = "Login";
+            return;
+          }
+
+          // Always redirect to home page
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1000);
+        } else {
+          showAlert(data.message || "Login failed. Please check your credentials.", "alert-error");
+          button.disabled = false;
+          button.textContent = "Login";
+        }
+      } catch (err) {
+        showAlert("Error: Unable to connect to server. " + err.message, "alert-error");
+        button.disabled = false;
+        button.textContent = "Login";
+      }
+    }
+
+    async function handleSignup(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById("signupUsername").value.trim();
+      const password = document.getElementById("signupPassword").value;
+      const confirmPassword = document.getElementById("signupPasswordConfirm").value;
+      const button = document.getElementById("signupButton");
+
+      // Validation
+      if (!username || !password) {
+        showAlert("Please fill in all fields", "alert-error");
+        return;
+      }
+
+      if (username.length < 3) {
+        showAlert("Username must be at least 3 characters long", "alert-error");
+        return;
+      }
+
+      if (password.length < 4) {
+        showAlert("Password must be at least 4 characters long", "alert-error");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showAlert("Passwords do not match", "alert-error");
+        return;
+      }
+
+      // Prevent reserved username
+      if (username.toLowerCase() === 'admin') {
+        showAlert("Username 'admin' is reserved. Please choose another.", "alert-error");
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "Creating Account...";
+
+      try {
+        const res = await fetch(apiBase + "/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          showAlert("Account created successfully! Redirecting...", "alert-success");
+          
+          // Redirect to home after successful signup
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1000);
+        } else {
+          showAlert(data.message || "Signup failed. Please try again.", "alert-error");
+          button.disabled = false;
+          button.textContent = "Create Account";
+        }
+      } catch (err) {
+        showAlert("Error: Unable to connect to server. " + err.message, "alert-error");
+        button.disabled = false;
+        button.textContent = "Create Account";
+      }
+    }
+
+    // Handle admin checkbox changes
+    document.getElementById('adminLogin').addEventListener('change', function(e) {
+      if (e.target.checked) {
+        showAlert("Admin login mode enabled. Use admin credentials.", "alert-success");
+      }
     });
   </script>
 </body>

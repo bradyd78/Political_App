@@ -1,7 +1,19 @@
 # 🏛️ Civic Engagement Platform
 
+> **🚀 Quick Start:** To run the application, see **[RUN_INSTRUCTIONS.md](RUN_INSTRUCTIONS.md)** for complete setup guide!
+> 
+> **TL;DR:** `pip install flask flask-cors requests` → `python3 frontend/src/app.py` → Open `http://localhost:5000`
+
 ## 📘 Project Overview
 This project is a civic engagement platform designed to help users interact with political content, track bills, follow political figures, and comment on legislation. It integrates a mix of **MVC** and **N-tier layered architecture** to ensure scalability, maintainability, and clear separation of concerns.
+
+**Current Features:**
+- ✅ User authentication (signup/login) with JSON persistence
+- ✅ View and search legislative bills
+- ✅ Comment on bills (comments saved to database)
+- ✅ Admin console for managing content
+- ✅ Published articles and blog posts
+- ✅ All data persists to JSON files
 
 ---
 

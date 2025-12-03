@@ -4,13 +4,14 @@ import requests
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, Response
 from flask_cors import CORS
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'), static_folder=os.path.join(BASE_DIR, 'static'))
 CORS(app)
-app.secret_key = os.environ.get('FLASK_SECRET', 'dev-secret-key')
+app.secret_key = os.environ.get('FLASK_SECRET', 'dev-secret-key-change-in-production')
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # Sessions last 7 days
 
 # In-memory comments: {bill_id: [ {"text": ..., "user": ...}, ... ]}
 COMMENTS = defaultdict(list)
@@ -126,18 +127,6 @@ def post_comment(bill_id):
     COMMENTS[bill_id].append({'text': text, 'user': user})
     save_comments_to_file()
     return jsonify({'success': True})
-import os
-import requests
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session, Response
-from flask_cors import CORS
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-app = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'), static_folder=os.path.join(BASE_DIR, 'static'))
-CORS(app)
-app.secret_key = os.environ.get('FLASK_SECRET', 'dev-secret-key')
-
-JAVA_BACKEND = os.environ.get('JAVA_BACKEND_URL', 'http://localhost:8080')
 
 @app.route('/')
 def home():
@@ -159,11 +148,12 @@ def login():
         return jsonify({"success": False, "message": "Invalid credentials"}), 401
     session['user'] = username
     session['is_admin'] = bool(u.get('is_admin'))
-    return jsonify({"success": True, "message": "Login successful"})
+    session.permanent = True  # Make session persistent
+    return jsonify({"success": True, "message": "Login successful", "is_admin": session['is_admin']})
 
 @app.route('/logout')
 def logout():
-    session.pop('user', None)
+    session.clear()  # Clear all session data
     return redirect(url_for('home'))
 
 
@@ -172,16 +162,28 @@ def signup():
     data = request.get_json() or request.form or {}
     username = (data.get('username') or '').strip()
     password = (data.get('password') or '').strip()
+    
     if not username or not password:
-        return 'Username and password required', 400
+        return jsonify({'success': False, 'message': 'Username and password required'}), 400
+    
+    # Prevent admin username from being registered
+    if username.lower() == 'admin':
+        return jsonify({'success': False, 'message': 'Username "admin" is reserved'}), 400
+    
     load_users_from_file()
     if username in USERS:
-        return 'Username already exists', 400
+        return jsonify({'success': False, 'message': 'Username already exists'}), 400
+    
+    # Create new user
     USERS[username] = {'password': password, 'is_admin': False}
     save_users_to_file()
+    
+    # Auto-login after signup
     session['user'] = username
     session['is_admin'] = False
-    return 'Signup successful'
+    session.permanent = True
+    
+    return jsonify({'success': True, 'message': 'Signup successful'}), 200
 
 @app.route('/map')
 def map_page():
@@ -326,4 +328,7 @@ def api_bills():
             return jsonify({'error': 'Could not load bills', 'details': str(e), 'proxy_error': str(e2)}), 502
 
 if __name__ == '__main__':
+    load_users_from_file()
+    load_comments_from_file()
+    load_publishes_from_file()
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
