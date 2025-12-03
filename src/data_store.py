@@ -48,8 +48,9 @@ def _acquire_file_lock(file_handle, exclusive: bool = True) -> bool:
 
     try:
         import msvcrt
-        lock_type = msvcrt.LK_LOCK if exclusive else msvcrt.LK_NBLCK
-        msvcrt.locking(file_handle.fileno(), lock_type, 1)
+        # msvcrt only supports exclusive locks; use LK_LOCK for blocking exclusive lock
+        # For non-exclusive reads, we still use exclusive lock on Windows for simplicity
+        msvcrt.locking(file_handle.fileno(), msvcrt.LK_LOCK, 1)
         return True
     except (ImportError, OSError):
         pass
@@ -278,11 +279,11 @@ def authenticate_user(username: str, password: str) -> dict | None:
 
     # Support both legacy plaintext passwords and bcrypt hashes
     password_hash = user.get('password_hash') or user.get('password')
-    if not password_hash:
+    if password_hash is None or password_hash == '':
         return None
 
-    # Check if this is a legacy plaintext password
-    if not password_hash.startswith('$2'):
+    # Check if this is a legacy plaintext password (bcrypt hashes start with $2)
+    if not str(password_hash).startswith('$2'):
         # Legacy plaintext comparison
         if password_hash == password:
             return {
