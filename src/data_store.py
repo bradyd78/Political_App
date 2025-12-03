@@ -3,6 +3,10 @@ JSON-backed data storage layer for bill comments and user accounts.
 
 Provides atomic file writes and cross-platform file locking for thread safety.
 Uses passlib with bcrypt for secure password hashing.
+
+Note: If file locking is unavailable (e.g., on some file systems), the code
+falls back to in-process threading locks. Full concurrent access protection
+across multiple processes requires proper file locking support.
 """
 
 import json
@@ -10,7 +14,7 @@ import os
 import tempfile
 import threading
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Optional
 
 try:
     from passlib.hash import bcrypt
@@ -221,7 +225,7 @@ def save_users(users: dict) -> None:
         _atomic_write(USERS_FILE, users)
 
 
-def create_user(username: str, password: str, display_name: str = None) -> dict:
+def create_user(username: str, password: str, display_name: Optional[str] = None) -> dict:
     """
     Create a new user with hashed password.
 
