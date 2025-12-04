@@ -1,44 +1,104 @@
 {% extends 'base.html' %}
 {% block title %}Admin — Political App{% endblock %}
 {% block content %}
+  <style>
+    .alert-success, .alert-info {
+      animation: slideDown 0.3s ease;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .recent-item {
+      border-left: 4px solid #28a745;
+      background: #d4edda;
+    }
+  </style>
+
   <div class="p-4 bg-white rounded shadow-sm">
-    <h1 class="mb-3">Admin Console</h1>
+    <h1 class="mb-3">🛠️ Admin Console</h1>
+    <p class="text-muted mb-4">Manage bills and publishes. Changes take effect immediately.</p>
+
+    <div id="alertContainer"></div>
 
     <div class="row">
       <div class="col-md-6">
-        <h5>Add Bill</h5>
-        <form id="addBillForm">
-          <input class="form-control mb-2" id="billTitle" placeholder="Title" required>
-          <input class="form-control mb-2" id="billDescription" placeholder="Description" required>
-          <input class="form-control mb-2" id="billCategory" placeholder="Category">
-          <button class="btn btn-primary" type="submit">Add Bill</button>
-        </form>
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5>📋 Add Bill</h5>
+            <form id="addBillForm">
+              <div class="mb-2">
+                <label class="form-label">Title</label>
+                <input class="form-control" id="billTitle" placeholder="e.g., Healthcare Reform Act" required>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" id="billDescription" placeholder="Brief description of the bill" rows="2" required></textarea>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Category</label>
+                <input class="form-control" id="billCategory" placeholder="e.g., Healthcare, Education">
+              </div>
+              <button class="btn btn-primary w-100" type="submit">Add Bill</button>
+            </form>
+          </div>
+        </div>
 
-        <hr>
-        <h5>Add Publish (Article/Blog)</h5>
-        <form id="addPublishForm">
-          <input class="form-control mb-2" id="pubTitle" placeholder="Title" required>
-          <textarea class="form-control mb-2" id="pubContent" placeholder="Content" rows="4" required></textarea>
-          <select id="pubType" class="form-select mb-2">
-            <option value="Article">Article</option>
-            <option value="Blog">Blog</option>
-          </select>
-          <button class="btn btn-primary" type="submit">Publish</button>
-        </form>
+        <div class="card">
+          <div class="card-body">
+            <h5>📰 Add Publish (Article/Blog)</h5>
+            <form id="addPublishForm">
+              <div class="mb-2">
+                <label class="form-label">Title</label>
+                <input class="form-control" id="pubTitle" placeholder="Article or blog title" required>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Content</label>
+                <textarea class="form-control" id="pubContent" placeholder="Full content of the article or blog" rows="4" required></textarea>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Type</label>
+                <select id="pubType" class="form-select">
+                  <option value="Article">Article</option>
+                  <option value="Blog">Blog</option>
+                </select>
+              </div>
+              <button class="btn btn-primary w-100" type="submit">Publish</button>
+            </form>
+          </div>
+        </div>
       </div>
 
       <div class="col-md-6">
-        <h5>Existing Publishes</h5>
-        <div id="adminPublishes">
-          {% for p in publishes %}
-            <div class="card mb-2">
-              <div class="card-body">
-                <h6 class="card-title">{{ p.title }}</h6>
-                <p class="card-text"><small class="text-muted">{{ p.type }} • {{ p.timestamp }}</small></p>
-                <p class="card-text">{{ p.content }}</p>
-              </div>
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5>📄 Recent Bills (Last 5)</h5>
+            <div id="recentBills" class="mt-3">
+              <div class="text-muted">Loading bills...</div>
             </div>
-          {% endfor %}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h5>📚 Existing Publishes</h5>
+            <div id="adminPublishes" class="mt-3">
+              {% if publishes %}
+                {% for p in publishes[-5:] | reverse %}
+                  <div class="card mb-2">
+                    <div class="card-body">
+                      <h6 class="card-title">{{ p.title }}</h6>
+                      <p class="card-text"><small class="text-muted">{{ p.type }} • {{ p.timestamp }}</small></p>
+                      <p class="card-text">{{ p.content[:100] }}{% if p.content|length > 100 %}...{% endif %}</p>
+                    </div>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <div class="text-muted">No publishes yet.</div>
+              {% endif %}
+            </div>
+            <a href="/publishes" class="btn btn-sm btn-outline-primary mt-2">View All Publishes</a>
+          </div>
         </div>
       </div>
     </div>
