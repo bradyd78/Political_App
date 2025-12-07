@@ -1,0 +1,246 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="980" viewBox="0 0 1400 980">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333" />
+    </marker>
+    <marker id="arrow-small" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 z" fill="#333" />
+    </marker>
+    <marker id="arrow-dashed" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#666" />
+    </marker>
+    <style>
+      .cls-box { fill:#f8f9fb; stroke:#2d3748; stroke-width:1.5px; rx:6; }
+      .cls-title { font: bold 14px sans-serif; fill:#111827; }
+      .cls-attrs { font: 12px monospace; fill:#1f2937; }
+      .section-title { font: 700 16px sans-serif; fill:#0f172a; }
+      .note { font: 12px sans-serif; fill:#0b1220; }
+      .dashed { stroke-dasharray:6 4; stroke:#444; stroke-width:1.4px; fill:none; marker-end:url(#arrow-dashed); }
+      .solid { stroke:#333; stroke-width:1.4px; fill:none; marker-end:url(#arrow); }
+      .solid-small { stroke:#333; stroke-width:1.2px; fill:none; marker-end:url(#arrow-small); }
+    </style>
+  </defs>
+
+  <!-- Section Titles -->
+  <text x="60" y="30" class="section-title">Domain Models</text>
+  <text x="420" y="30" class="section-title">Controllers (Java Backend)</text>
+  <text x="820" y="30" class="section-title">Services & Infrastructure</text>
+
+  <!-- FlaskApp -->
+  <g transform="translate(180,50)">
+    <rect class="cls-box" width="220" height="80"></rect>
+    <text x="12" y="26" class="cls-title">FlaskApp</text>
+    <text x="12" y="50" class="cls-attrs">+ render(template, context)</text>
+    <text x="12" y="66" class="cls-attrs">+ proxyApiRequest(path, method)</text>
+  </g>
+
+  <!-- Models column -->
+  <!-- User -->
+  <g transform="translate(40,70)">
+    <rect class="cls-box" width="260" height="86"></rect>
+    <text x="12" y="28" class="cls-title">User</text>
+    <text x="12" y="46" class="cls-attrs">+ username: String</text>
+    <text x="12" y="62" class="cls-attrs">+ passwordHash: String</text>
+    <text x="12" y="78" class="cls-attrs">+ isAdmin: boolean</text>
+  </g>
+
+  <!-- Bill -->
+  <g transform="translate(40,180)">
+    <rect class="cls-box" width="260" height="86"></rect>
+    <text x="12" y="28" class="cls-title">Bill</text>
+    <text x="12" y="46" class="cls-attrs">+ id: String</text>
+    <text x="12" y="62" class="cls-attrs">+ title: String</text>
+    <text x="12" y="78" class="cls-attrs">+ category: String</text>
+  </g>
+
+  <!-- Comment -->
+  <g transform="translate(40,290)">
+    <rect class="cls-box" width="260" height="86"></rect>
+    <text x="12" y="28" class="cls-title">Comment</text>
+    <text x="12" y="46" class="cls-attrs">+ id: String</text>
+    <text x="12" y="62" class="cls-attrs">+ billId: String</text>
+    <text x="12" y="78" class="cls-attrs">+ text: String</text>
+  </g>
+
+  <!-- PoliticalFigure -->
+  <g transform="translate(40,400)">
+    <rect class="cls-box" width="260" height="66"></rect>
+    <text x="12" y="28" class="cls-title">PoliticalFigure</text>
+    <text x="12" y="46" class="cls-attrs">+ name: String</text>
+    <text x="12" y="62" class="cls-attrs">+ office: String</text>
+  </g>
+
+  <!-- PoliticalNewsFeed -->
+  <g transform="translate(40,490)">
+    <rect class="cls-box" width="260" height="66"></rect>
+    <text x="12" y="28" class="cls-title">PoliticalNewsFeed</text>
+    <text x="12" y="46" class="cls-attrs">+ id: String</text>
+    <text x="12" y="62" class="cls-attrs">+ title: String</text>
+  </g>
+
+  <!-- BAPublish -->
+  <g transform="translate(40,580)">
+    <rect class="cls-box" width="260" height="66"></rect>
+    <text x="12" y="28" class="cls-title">BAPublish</text>
+    <text x="12" y="46" class="cls-attrs">+ id: int</text>
+    <text x="12" y="62" class="cls-attrs">+ title: String</text>
+  </g>
+
+  <!-- Settings -->
+  <g transform="translate(40,670)">
+    <rect class="cls-box" width="260" height="56"></rect>
+    <text x="12" y="28" class="cls-title">Settings</text>
+    <text x="12" y="46" class="cls-attrs">+ userId: String</text>
+  </g>
+
+  <!-- Controllers column -->
+  <!-- BillController -->
+  <g transform="translate(380,70)">
+    <rect class="cls-box" width="260" height="72"></rect>
+    <text x="12" y="30" class="cls-title">BillController</text>
+    <text x="12" y="50" class="cls-attrs">+ getBills()/create/update/delete</text>
+  </g>
+
+  <!-- UserController -->
+  <g transform="translate(380,160)">
+    <rect class="cls-box" width="260" height="72"></rect>
+    <text x="12" y="30" class="cls-title">UserController</text>
+    <text x="12" y="50" class="cls-attrs">+ getUser()/create/update/delete</text>
+  </g>
+
+  <!-- CommentController -->
+  <g transform="translate(380,250)">
+    <rect class="cls-box" width="260" height="72"></rect>
+    <text x="12" y="30" class="cls-title">CommentController</text>
+    <text x="12" y="50" class="cls-attrs">+ getComments()/add/edit/delete</text>
+  </g>
+
+  <!-- PoliticalFigureController -->
+  <g transform="translate(380,340)">
+    <rect class="cls-box" width="260" height="62"></rect>
+    <text x="12" y="30" class="cls-title">PoliticalFigureController</text>
+    <text x="12" y="50" class="cls-attrs">+ getFigures()/getFigure</text>
+  </g>
+
+  <!-- PoliticalNewsFeedController -->
+  <g transform="translate(380,420)">
+    <rect class="cls-box" width="260" height="62"></rect>
+    <text x="12" y="30" class="cls-title">PoliticalNewsFeedController</text>
+    <text x="12" y="50" class="cls-attrs">+ getNews()/getNewsItem</text>
+  </g>
+
+  <!-- BAPublishesController -->
+  <g transform="translate(380,500)">
+    <rect class="cls-box" width="260" height="62"></rect>
+    <text x="12" y="30" class="cls-title">BAPublishesController</text>
+    <text x="12" y="50" class="cls-attrs">+ getPublishes()/create/delete</text>
+  </g>
+
+  <!-- SettingsController -->
+  <g transform="translate(380,580)">
+    <rect class="cls-box" width="260" height="62"></rect>
+    <text x="12" y="30" class="cls-title">SettingsController</text>
+    <text x="12" y="50" class="cls-attrs">+ getSettings()/updateSettings</text>
+  </g>
+
+  <!-- Services column (top-right) -->
+  <g transform="translate(820,70)">
+    <rect class="cls-box" width="300" height="64"></rect>
+    <text x="12" y="28" class="cls-title">AuthenticationService</text>
+    <text x="12" y="46" class="cls-attrs">+ validateSession() / isAdmin()</text>
+  </g>
+
+  <g transform="translate(820,150)">
+    <rect class="cls-box" width="300" height="64"></rect>
+    <text x="12" y="28" class="cls-title">LoginService</text>
+    <text x="12" y="46" class="cls-attrs">+ login()/logout()</text>
+  </g>
+
+  <g transform="translate(820,230)">
+    <rect class="cls-box" width="300" height="64"></rect>
+    <text x="12" y="28" class="cls-title">SignupService</text>
+    <text x="12" y="46" class="cls-attrs">+ signup()/validateSignupData()</text>
+  </g>
+
+  <!-- Infrastructure bottom-right -->
+  <g transform="translate(820,350)">
+    <rect class="cls-box" width="300" height="94"></rect>
+    <text x="12" y="28" class="cls-title">DatabaseController</text>
+    <text x="12" y="46" class="cls-attrs">+ readUsers()/writeUsers()</text>
+    <text x="12" y="62" class="cls-attrs">+ readBills()/writeBills()</text>
+    <text x="12" y="78" class="cls-attrs">+ readComments()/writeComments()</text>
+  </g>
+
+  <!-- File storage note -->
+  <g transform="translate(820,470)">
+    <rect fill="#fff6e6" stroke="#d97706" rx="6" width="300" height="86"></rect>
+    <text x="12" y="30" class="note"><tspan x="12">Backing storage in repo:</tspan></text>
+    <text x="12" y="50" class="note">- database/users.json</text>
+    <text x="12" y="68" class="note">- database/comments.json</text>
+    <text x="12" y="86" class="note">- database/publishes.json / billsList.txt</text>
+  </g>
+
+  <!-- Associations: Controllers -> Models -->
+  <!-- BillController -> Bill -->
+  <path d="M 640 106 L 720 106" class="solid" />
+  <path d="M 720 106 L 300 220" class="solid" transform="translate(0,0) rotate(0 0 0)"/>
+  <!-- Draw a direct arrow from BillController to Bill -->
+  <path d="M 640 106 L 540 160" class="solid" marker-end="url(#arrow)" />
+
+  <!-- For clarity draw explicit arrows from controllers to models -->
+  <!-- BillController -> Bill (center line) -->
+  <path d="M 640 100 L 460 220" class="solid" />
+
+  <!-- CommentController -> Comment -->
+  <path d="M 640 286 L 320 332" class="solid" />
+
+  <!-- UserController -> User -->
+  <path d="M 460 180 L 300 116" class="solid" />
+
+  <!-- BAPublishesController -> BAPublish -->
+  <path d="M 640 524 L 300 614" class="solid" />
+
+  <!-- SettingsController -> Settings -->
+  <path d="M 640 610 L 300 696" class="solid" />
+
+  <!-- PoliticalFigureController -> PoliticalFigure -->
+  <path d="M 640 370 L 300 420" class="solid" />
+
+  <!-- PoliticalNewsFeedController -> PoliticalNewsFeed -->
+  <path d="M 640 440 L 300 520" class="solid" />
+
+  <!-- Controllers -> AuthenticationService (dependency - dashed) -->
+  <path d="M 480 110 L 820 100" class="dashed" />
+  <path d="M 480 200 L 820 100" class="dashed" />
+  <path d="M 480 290 L 820 100" class="dashed" />
+  <path d="M 480 500 L 820 100" class="dashed" />
+
+  <!-- UserController uses LoginService & SignupService (dashed) -->
+  <path d="M 480 180 L 900 180" class="dashed" />
+  <path d="M 480 180 L 900 260" class="dashed" />
+
+  <!-- DatabaseController persists domain models -->
+  <path d="M 1120 390 L 300 640" class="solid" />
+  <path d="M 1100 410 L 300 520" class="solid" />
+  <path d="M 1100 430 L 320 340" class="solid" />
+
+  <!-- FlaskApp --> 
+  <!-- FlaskApp proxies to controllers -->
+  <path d="M 240 110 L 380 100" class="solid-small" />
+  <path d="M 240 130 L 380 170" class="solid-small" />
+  <path d="M 240 150 L 400 260" class="solid-small" />
+
+  <!-- Relationship labels (simple) -->
+  <text x="310" y="250" class="note">controllers manage models</text>
+  <text x="900" y="330" class="note">services: auth / login / signup</text>
+
+  <!-- Legend -->
+  <g transform="translate(60,760)">
+    <rect width="1260" height="180" rx="8" fill="#f3f4f6" stroke="#e5e7eb"></rect>
+    <text x="18" y="788" class="section-title">Legend & Notes</text>
+    <text x="18" y="808" class="note">- This diagram is an exported SVG approximation of the mermaid class diagram from ARCHITECTURE.md.</text>
+    <text x="18" y="826" class="note">- Main domain classes, controllers, services and persistence are shown.</text>
+    <text x="18" y="844" class="note">- Arrows: solid = manages/persists; dashed = uses/auth dependency; FlaskApp shows proxy to Java backend.</text>
+    <text x="18" y="862" class="note">- If you want a different layout, more detail, or a PlantUML export, tell me and I will produce it.</text>
+  </g>
+</svg>
