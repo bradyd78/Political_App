@@ -1,0 +1,200 @@
+classDiagram
+    %% --- Models: BAPublishes and its inner Publication ---
+    class BAPublishes {
+        - List~Publication~ publications
+        + BAPublishes()
+        + addPublication(title:String, content:String, type:String)
+        + displayPublicationsByType(type:String)
+        + isEmpty(): boolean
+    }
+
+    class Publication {
+        - String title
+        - String content
+        - String type
+        - LocalDateTime timestamp
+        + getTitle(): String
+        + getContent(): String
+        + getType(): String
+        + getTimestamp(): LocalDateTime
+        + toString(): String
+    }
+
+    BAPublishes o-- Publication : contains
+
+    %% --- Models: PoliticalNewsFeed and its inner NewsArticle ---
+    class PoliticalNewsFeed {
+        - List~NewsArticle~ articles
+        + PoliticalNewsFeed()
+        + addArticle(title:String, content:String)
+        + displayRecentNews()
+        + getMostRecentArticle(): NewsArticle
+        + isEmpty(): boolean
+    }
+
+    class NewsArticle {
+        - String title
+        - String content
+        - LocalDateTime timestamp
+        + getTitle(): String
+        + getContent(): String
+        + getTimestamp(): LocalDateTime
+        + toString(): String
+    }
+
+    PoliticalNewsFeed o-- NewsArticle : contains
+
+    %% --- Bill and CommentOnBill ---
+    class Bill {
+        - int billID
+        - String name
+        - String summary
+        - String fullBill
+        - String status
+        - int numberMockVotes
+        - int inFavor
+        - int against
+        - List~String~ comments
+        - Date createdAt
+        + getBillID(): int
+        + getName(): String
+        + getSummary(): String
+        + getFullBill(): String
+        + getStatus(): String
+        + getNumberMockVotes(): int
+        + getInFavor(): int
+        + getAgainst(): int
+        + getComments(): List~String~
+        + getCreatedAt(): Date
+        + toString(): String
+    }
+
+    class CommentOnBill {
+        - int commentId
+        - Bill bill
+        - User user
+        - String commentText
+        - LocalDateTime timestamp
+        + CommentOnBill(bill:Bill, user:User, text:String)
+        + getCommentId(): int
+        + getBill(): Bill
+        + getUser(): User
+        + getCommentText(): String
+        + getTimestamp(): LocalDateTime
+        + setCommentText(text:String)
+        + displayComment()
+    }
+
+    CommentOnBill --> Bill : references
+    CommentOnBill --> User : authoredBy
+
+    %% --- Political_Figure, Settings, User ---
+    class Political_Figure {
+        - Long id
+        - String name
+        - String party
+        - String office
+        - String state
+        - String bio
+        - String imageUrl
+        + getId()/setId(...)
+        + getName()/setName(...)
+        + getParty()/setParty(...)
+        + getOffice()/setOffice(...)
+        + getState()/setState(...)
+        + getBio()/setBio(...)
+        + getImageUrl()/setImageUrl(...)
+        + equals(obj): boolean
+    }
+
+    class Settings {
+        - String theme
+        - boolean notificationsEnabled
+        - String language
+        + Settings()
+        + Settings(theme:String, notificationsEnabled:boolean, language:String)
+        + getTheme(): String
+        + setTheme(theme:String)
+        + isNotificationsEnabled(): boolean
+        + setNotificationsEnabled(enabled:boolean)
+        + getLanguage(): String
+        + setLanguage(lang:String)
+        + toString(): String
+    }
+
+    class User {
+        - String username
+        - String password
+        + User()
+        + User(username:String, password:String)
+        + getUsername(): String
+        + setUsername(u:String)
+        + getPassword(): String
+        + setPassword(p:String)
+        + toString(): String
+    }
+
+    %% --- Login / Signup services ---
+    class SignupService {
+        - Map~String,User~ userDatabase
+        + signup(username:String, password:String): boolean
+        + getUserDatabase(): Map~String,User~
+    }
+
+    class LoginService {
+        - SignupService signupService
+        + LoginService(signupService:SignupService)
+        + login(username:String, password:String): boolean
+    }
+
+    SignupService "1" o-- "*" User : userDatabase
+    LoginService --> SignupService : dependsOn
+    LoginService --> User : authenticates
+
+    %% --- Controllers ---
+    class BAPublishesController {
+        + main(args:String[])
+    }
+    class PoliticalNewsFeedController {
+        + main(args:String[])
+        + viewAll()
+        + addArticle(...)
+        + viewMostRecent()
+    }
+    class CommentController {
+        + main(args:String[])
+        + addComment(...)
+    }
+    class BillController {
+        - Map~Integer,Bill~ billStore
+        + createBill(b:Bill): Bill
+        + getBill(id:int): Bill
+        + getAllBills(): Collection~Bill~
+        + voteOnBill(id:int, inFavor:boolean): String
+        + getRecentBills(limit:int): List~Bill~
+    }
+    class UserController {
+        - List~User~ users
+        + signup(newUser:User): String
+        + login(loginUser:User): String
+        + getAllUsers(): List~User~
+    }
+    class SettingsController {
+        - Settings settings
+        + SettingsController()
+        + updateTheme(theme:String)
+        + toggleNotifications()
+        + changeLanguage(language:String)
+        + displaySettings()
+    }
+
+    %% --- Controller to model relationships / usages ---
+    BAPublishesController --> BAPublishes : uses
+    PoliticalNewsFeedController --> PoliticalNewsFeed : uses
+    CommentController --> CommentOnBill : creates
+    CommentController --> Bill : lists/selects
+    CommentController --> User : authoredBy
+    BillController --> Bill : manages
+    UserController --> User : manages
+    SettingsController o-- Settings : holds
+    SignupService --> User : creates
