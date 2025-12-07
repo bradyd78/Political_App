@@ -24,6 +24,8 @@ This project is a civic engagement platform designed to help users interact with
 ### 📊 Architectural Diagram
 <img width="1033" height="499" alt="image" src="https://github.com/user-attachments/assets/66329fdf-17cb-4367-bc82-1bd0256a0907" />
 
+## UML CLASS DIAGRAM
+https://github.com/bradyd78/Political_App/blob/main/UML_DIAGRAM.mmd
 
 ---
 
